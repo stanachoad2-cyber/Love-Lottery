@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>สลากกินแบ่งความรัก ❤️</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Prompt:wght@300;400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper-color: #fffaf0;
+        --valentine-pink: #ff8fa3;
+        --deep-red: #b3001b;
+        --lotto-blue: #004d99;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%);
+        font-family: "Prompt", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .heart-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .heart-bg span {
+        position: absolute;
+        bottom: -50px;
+        background: rgba(255, 255, 255, 0.4);
+        transform: rotate(45deg);
+        animation: float 8s infinite;
+        border-radius: 2px;
+      }
+      .heart-bg span::before,
+      .heart-bg span::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        border-radius: 50%;
+      }
+      .heart-bg span::before {
+        top: -50%;
+        left: 0;
+      }
+      .heart-bg span::after {
+        top: 0;
+        left: -50%;
+      }
+      @keyframes float {
+        to {
+          transform: translateY(-110vh) rotate(405deg);
+          opacity: 0;
+        }
+      }
+
+      .wrapper {
+        text-align: center;
+        z-index: 10;
+        width: 100%;
+        padding: 20px 0;
+      }
+
+      /* ตั้งค่าบรรทัดที่ 1 */
+      .title {
+        font-family: "Dancing Script", cursive;
+        color: var(--deep-red);
+        font-size: 3.2rem;
+        margin: 0;
+        line-height: 1;
+      }
+      /* ตั้งค่าบรรทัดที่ 2 (สี #444) */
+      .thai-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #444;
+        margin: 15px 0 0 0; /* Gap เท่ากัน */
+        line-height: 1;
+      }
+      /* ตั้งค่าบรรทัดที่ 3 (สี #444) */
+      .subtitle {
+        margin: 15px 0 25px 0; /* Gap เท่ากัน */
+        color: #444;
+        font-weight: bold;
+        font-size: 1rem;
+        line-height: 1;
+      }
+
+      .lotto-panel {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 0 15px;
+        justify-items: center;
+      }
+
+      /* แก้ไขจุดเดียว: เปลี่ยนจาก fixed height เป็น auto เพื่อให้ราคาไม่หายในโทรศัพท์ */
+      .thai-lotto {
+        position: relative;
+        width: 100%;
+        height: auto; /* แก้จาก 140px */
+        background: var(--paper-color);
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        transition: 0.3s;
+        border: 1px solid #ddd;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .thai-lotto:active {
+        transform: scale(0.98);
+      }
+      .thai-lotto::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 0;
+        bottom: 0;
+        width: 10px;
+        background-image: radial-gradient(circle, #ffafbd 5px, transparent 5px);
+        background-size: 10px 15px;
+        z-index: 5;
+      }
+
+      .lotto-header {
+        background: var(--valentine-pink);
+        color: white;
+        padding: 4px;
+        font-size: 0.6rem;
+        text-align: center;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+      .lotto-content {
+        padding: 10px 15px 15px 15px; /* เพิ่ม padding ล่างนิดหน่อย */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: auto; /* แก้จาก 105px */
+        min-height: 110px;
+      }
+      .lotto-top {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.5rem;
+        color: var(--lotto-blue);
+        font-weight: bold;
+      }
+      .lotto-number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        text-align: center;
+        letter-spacing: 4px;
+        font-family: "Courier New", monospace;
+        margin: 10px 0;
+      }
+      .lotto-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-size: 0.45rem; /* ปรับขนาดเล็กน้อยเพื่อไม่ให้ล้น */
+        color: #666;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+      .lotto-stamp {
+        position: absolute;
+        right: 15px;
+        bottom: 30px; /* ขยับขึ้นตามกรอบที่ใหญ่ขึ้น */
+        font-size: 1.8rem;
+        color: rgba(179, 0, 27, 0.1);
+        transform: rotate(-20deg);
+        pointer-events: none;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 5000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+      .win-card {
+        background: white;
+        color: #333;
+        padding: 30px 15px;
+        border-radius: 25px;
+        width: 95%;
+        max-width: 380px;
+        border: 4px solid gold;
+        box-shadow: 0 0 40px gold;
+        animation: pop 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .error-card {
+        background: white;
+        color: #333;
+        padding: 30px 15px;
+        border-radius: 25px;
+        width: 95%;
+        max-width: 380px;
+        border: 4px solid var(--valentine-pink);
+        animation: pop 0.5s forwards;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .spinning-wheel {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--lotto-blue);
+        font-family: "Courier New", monospace;
+        letter-spacing: 3px;
+        margin: 15px 0;
+        display: inline-block;
+        padding: 10px 15px;
+        background: #f0f0f0;
+        border-radius: 10px;
+        border: 3px solid #ccc;
+      }
+
+      .prize-frame {
+        border: 2px solid var(--deep-red);
+        padding: 15px 10px;
+        margin: 20px 10px;
+        border-radius: 15px;
+        position: relative;
+        background: #fffcfc;
+        opacity: 0;
+        transition: 0.8s ease-in-out;
+      }
+      .prize-frame::before {
+        content: "❤️";
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 0 10px;
+        font-size: 1rem;
+      }
+      #win-text {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--deep-red);
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .btn-claim,
+      .btn-retry,
+      .btn-final {
+        display: inline-block;
+        background: var(--deep-red);
+        color: white;
+        border: none;
+        padding: 12px 45px;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        -webkit-appearance: none;
+        margin-top: 10px;
+      }
+      .btn-claim {
+        display: none;
+      }
+      .btn-retry {
+        background: #666;
+      }
+
+      #video-stage {
+        position: fixed;
+        inset: 0;
+        background: black;
+        z-index: 9000;
+        display: none;
+        opacity: 1;
+        transition: opacity 1.5s ease-out;
+      }
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      canvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 6000;
+      }
+
+      @media (max-width: 600px) {
+        .title {
+          font-size: 2.8rem;
+        }
+        .thai-title {
+          font-size: 1.5rem;
+        }
+        .lotto-number {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="heart-bg" id="heartContainer"></div>
+
+    <div class="wrapper" id="mainWrapper">
+      <h1 class="title">Love Lottery</h1>
+      <p class="thai-title">สลากกินแบ่งความรัก</p>
+      <p class="subtitle">รางวัลที่ 1 ประจำงวดวันที่ 14 ก.พ. 2569 ❤️</p>
+
+      <div class="lotto-panel">
+        <div class="thai-lotto" onclick="checkWin(this, '459821')">
+          <div class="lotto-header">สลากกินแบ่งความรัก</div>
+          <div class="lotto-content">
+            <div class="lotto-top">
+              <span>งวดที่ ๑๔</span> <span>ชุดที่ ๐๑</span>
+            </div>
+            <div class="lotto-number">459821</div>
+            <div class="lotto-footer">
+              <span>ราคา ๘๐ ความรัก</span> <span>14 ก.พ. 69</span>
+            </div>
+          </div>
+          <div class="lotto-stamp">❤️</div>
+        </div>
+        <div class="thai-lotto" onclick="checkWin(this, '170823')">
+          <div class="lotto-header">สลากกินแบ่งความรัก</div>
+          <div class="lotto-content">
+            <div class="lotto-top">
+              <span>งวดที่ ๑๔</span> <span>ชุดที่ ๐๒</span>
+            </div>
+            <div class="lotto-number">170823</div>
+            <div class="lotto-footer">
+              <span>ราคา ๘๐ ความรัก</span> <span>14 ก.พ. 69</span>
+            </div>
+          </div>
+          <div class="lotto-stamp">❤️</div>
+        </div>
+        <div class="thai-lotto" onclick="checkWin(this, '001293')">
+          <div class="lotto-header">สลากกินแบ่งความรัก</div>
+          <div class="lotto-content">
+            <div class="lotto-top">
+              <span>งวดที่ ๑๔</span> <span>ชุดที่ ๐๓</span>
+            </div>
+            <div class="lotto-number">001293</div>
+            <div class="lotto-footer">
+              <span>ราคา ๘๐ ความรัก</span> <span>14 ก.พ. 69</span>
+            </div>
+          </div>
+          <div class="lotto-stamp">❤️</div>
+        </div>
+        <div class="thai-lotto" onclick="checkWin(this, '992834')">
+          <div class="lotto-header">สลากกินแบ่งความรัก</div>
+          <div class="lotto-content">
+            <div class="lotto-top">
+              <span>งวดที่ ๑๔</span> <span>ชุดที่ ๐๔</span>
+            </div>
+            <div class="lotto-number">992834</div>
+            <div class="lotto-footer">
+              <span>ราคา ๘๐ ความรัก</span> <span>14 ก.พ. 69</span>
+            </div>
+          </div>
+          <div class="lotto-stamp">❤️</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-modal" class="modal-overlay">
+      <div class="error-card">
+        <h2 style="color: var(--valentine-pink); margin-top: 0">
+          ว้ายยย ใบนี้เฉียดไปนิดเดียว 💔
+        </h2>
+        <p>งวดนี้ยังไม่ถูกรางวัลจ้า... ลองใหม่นะคนดี</p>
+        <button class="btn-retry" onclick="closeError()">เลือกใหม่ 💕</button>
+      </div>
+    </div>
+
+    <div id="reveal-modal" class="modal-overlay">
+      <div class="win-card">
+        <h2
+          id="modal-title"
+          style="color: var(--deep-red); margin-top: 0; font-size: 1.6rem"
+        >
+          ผลการออกรางวัลที่ 1 🎉
+        </h2>
+        <p id="modal-label" style="margin-bottom: 5px">เลขที่ออก...</p>
+        <div class="spinning-wheel" id="spinner">000000</div>
+        <div class="prize-frame" id="prizeFrame">
+          <p id="win-text">
+            จำเลขนี้ได้ไหม? มันไม่ใช่แค่เลขสุ่มนะ...<br />มันคือวันที่ทุกอย่างเริ่มต้นขึ้น
+          </p>
+        </div>
+        <button class="btn-claim" id="claimBtn" onclick="openPrize()">
+          เปิดดูความทรงจำของเรา ❤️
+        </button>
+      </div>
+    </div>
+
+    <div id="final-message-modal" class="modal-overlay">
+      <div class="win-card">
+        <h2 style="color: var(--deep-red); margin-top: 0; font-size: 1.8rem">
+          The best thing I’ve ever had ❤️
+        </h2>
+        <div class="prize-frame" style="opacity: 1; margin: 30px 10px">
+          <p
+            style="
+              font-size: 1.4rem;
+              font-weight: 800;
+              color: var(--deep-red);
+              line-height: 1.6;
+            "
+          >
+            มีที่ให้ไปด้วยกันอีกเยอะเลย...<br />
+            <span style="font-size: 1.8rem; color: #000">อย่าพึ่งตายละ!</span>
+          </p>
+        </div>
+        <button class="btn-final" onclick="location.reload()">
+          รักนะ ดีล! 🤙
+        </button>
+      </div>
+    </div>
+
+    <div id="video-stage">
+      <video id="myVideo" playsinline controls>
+        <source src="love.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <canvas id="heartCanvas"></canvas>
+
+    <script>
+      const heartContainer = document.getElementById("heartContainer");
+      for (let i = 0; i < 12; i++) {
+        let s = document.createElement("span");
+        s.style.width = s.style.height = Math.random() * 15 + 10 + "px";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.animationDelay = Math.random() * 5 + "s";
+        heartContainer.appendChild(s);
+      }
+
+      function checkWin(element, num) {
+        if (num !== "170823") {
+          element.style.opacity = "0.5";
+          element.style.pointerEvents = "none";
+          document.getElementById("error-modal").style.display = "flex";
+          return;
+        }
+        document.getElementById("reveal-modal").style.display = "flex";
+        spinWheel();
+      }
+
+      function closeError() {
+        document.getElementById("error-modal").style.display = "none";
+      }
+
+      function spinWheel() {
+        const spinner = document.getElementById("spinner");
+        const frame = document.getElementById("prizeFrame");
+        const claimBtn = document.getElementById("claimBtn");
+        const modalTitle = document.getElementById("modal-title");
+        let count = 0;
+        let speed = 50;
+        function roll() {
+          spinner.innerText = Math.floor(Math.random() * 900000 + 100000);
+          count++;
+          if (count < 35) {
+            speed += 5;
+            setTimeout(roll, speed);
+          } else {
+            spinner.innerText = "170823";
+            spinner.style.color = "#b3001b";
+            spinner.style.borderColor = "#b3001b";
+            modalTitle.innerText = "ยินดีด้วย🎉";
+            setTimeout(() => {
+              frame.style.opacity = "1";
+              claimBtn.style.display = "inline-block";
+              initConfetti();
+            }, 500);
+          }
+        }
+        setTimeout(roll, speed);
+      }
+
+      function openPrize() {
+        const stage = document.getElementById("video-stage");
+        const wrapper = document.getElementById("mainWrapper");
+        const revealModal = document.getElementById("reveal-modal");
+        wrapper.style.display = "none";
+        revealModal.style.display = "none";
+        stage.style.display = "block";
+        stage.style.opacity = "1";
+        document.getElementById("myVideo").play();
+      }
+
+      const myVideo = document.getElementById("myVideo");
+      myVideo.onended = function () {
+        const stage = document.getElementById("video-stage");
+        const finalModal = document.getElementById("final-message-modal");
+        finalModal.style.display = "flex";
+        stage.style.opacity = "0";
+        setTimeout(() => {
+          stage.style.display = "none";
+          initConfetti();
+        }, 1500);
+      };
+
+      const canvas = document.getElementById("heartCanvas");
+      const ctx = canvas.getContext("2d");
+      let particles = [];
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resize);
+      resize();
+      class Particle {
+        constructor() {
+          this.x = window.innerWidth / 2;
+          this.y = window.innerHeight / 2;
+          this.size = Math.random() * 20 + 15;
+          this.sx = (Math.random() - 0.5) * 15;
+          this.sy = (Math.random() - 0.5) * 15;
+          this.life = 1;
+        }
+        update() {
+          this.x += this.sx;
+          this.y += this.sy;
+          this.sy += 0.2;
+          this.life -= 0.01;
+        }
+        draw() {
+          ctx.globalAlpha = this.life;
+          ctx.font = `${this.size}px serif`;
+          ctx.fillText("❤️", this.x, this.y);
+        }
+      }
+      function initConfetti() {
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
+        animateParticles();
+      }
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles = particles.filter((p) => p.life > 0);
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
+        if (particles.length > 0) requestAnimationFrame(animateParticles);
+      }
+    </script>
+  </body>
+</html>
